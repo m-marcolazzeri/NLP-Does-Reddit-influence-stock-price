@@ -1,0 +1,17 @@
+{
+  "subreddit": "wallstreetbets",
+  "extraction_period": {
+    "start": "2025-01-01",
+    "end": "2025-12-31"
+  },
+  "active_match_sources": [
+    "cashtags",
+    "exact_tickers",
+    "company_names"
+  ],
+  "use_safe_aliases": false,
+  "use_risky_aliases": false,
+  "keep_multi_match_rows": true,
+  "keep_raw_text": true,
+  "save_match_metadata": true
+}

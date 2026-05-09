@@ -1,0 +1,90 @@
+{
+  "dataset_name": "wsb_matched_audit_rows_v2",
+  "description": "Audit-level matched rows extracted from Reddit wallstreetbets comments or submissions with linking fields preserved.",
+  "columns": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "created_utc",
+      "type": "integer"
+    },
+    {
+      "name": "date_utc",
+      "type": "string"
+    },
+    {
+      "name": "source_type",
+      "type": "string"
+    },
+    {
+      "name": "subreddit",
+      "type": "string"
+    },
+    {
+      "name": "author",
+      "type": "string"
+    },
+    {
+      "name": "score",
+      "type": "numeric"
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "body_text",
+      "type": "string"
+    },
+    {
+      "name": "raw_text",
+      "type": "string"
+    },
+    {
+      "name": "permalink",
+      "type": "string"
+    },
+    {
+      "name": "link_id",
+      "type": "string"
+    },
+    {
+      "name": "parent_id",
+      "type": "string"
+    },
+    {
+      "name": "submission_id",
+      "type": "string"
+    },
+    {
+      "name": "matched_tickers",
+      "type": "string"
+    },
+    {
+      "name": "matched_terms",
+      "type": "string"
+    },
+    {
+      "name": "match_sources",
+      "type": "string"
+    },
+    {
+      "name": "match_count",
+      "type": "integer"
+    },
+    {
+      "name": "is_multi_match",
+      "type": "integer"
+    },
+    {
+      "name": "match_confidence",
+      "type": "string"
+    },
+    {
+      "name": "needs_context_filter",
+      "type": "integer"
+    }
+  ]
+}

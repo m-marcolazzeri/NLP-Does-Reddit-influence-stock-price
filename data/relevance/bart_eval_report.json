@@ -1,0 +1,51 @@
+{
+  "strict": {
+    "macro_precision": 0.7206,
+    "macro_recall": 0.6469,
+    "macro_f1": 0.6407,
+    "kappa": 0.3174,
+    "confusion_matrix": [
+      [
+        1614,
+        142
+      ],
+      [
+        778,
+        466
+      ]
+    ]
+  },
+  "liberal": {
+    "macro_precision": 0.8541,
+    "macro_recall": 0.7068,
+    "macro_f1": 0.7325,
+    "kappa": 0.4843,
+    "confusion_matrix": [
+      [
+        2038,
+        38
+      ],
+      [
+        525,
+        399
+      ]
+    ]
+  },
+  "per_stock": {
+    "AMD": {
+      "n": 1000,
+      "macro_f1": 0.6277,
+      "accuracy": 0.667
+    },
+    "NVDA": {
+      "n": 1000,
+      "macro_f1": 0.6269,
+      "accuracy": 0.709
+    },
+    "PLTR": {
+      "n": 1000,
+      "macro_f1": 0.6616,
+      "accuracy": 0.704
+    }
+  }
+}

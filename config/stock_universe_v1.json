@@ -1,0 +1,19 @@
+{
+  "project_name": "reddit-tech-stocks-nlp",
+  "time_period": {
+    "start": "2025-01-01",
+    "end": "2025-12-31"
+  },
+  "stocks": [
+    "AAPL",
+    "MSFT",
+    "NVDA",
+    "AMD",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "TSLA",
+    "PLTR",
+    "INTC"
+  ]
+}
