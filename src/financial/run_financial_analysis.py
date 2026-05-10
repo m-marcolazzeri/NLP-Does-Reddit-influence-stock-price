@@ -56,9 +56,10 @@ from config_lda import K_FINAL  # noqa: E402
 TICKER      = "AMD"
 STOCK_NAME  = "AMD"   # must match the 'stock' column in results_v1.csv
 
-CSV_PATH    = BASE_DIR / "data" / "topic_modeling" / "results_v1.csv"
-OUTPUT_DIR  = BASE_DIR / "data" / "financial"
-PLOT_DIR    = OUTPUT_DIR / "plots"
+CSV_PATH     = BASE_DIR / "data" / "topic_modeling" / "results_v1.csv"
+LABELS_PATH  = BASE_DIR / "config" / "topic_labels_v1.json"
+OUTPUT_DIR   = BASE_DIR / "data" / "financial"
+PLOT_DIR     = OUTPUT_DIR / "plots"
 
 DATE_START  = "2025-01-01"
 DATE_END    = "2025-12-31"
@@ -77,6 +78,27 @@ CV_SPLITS         = 5
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+def load_topic_labels() -> dict:
+    """Load topic name mapping from config/topic_labels_v1.json.
+    Returns empty dict if file is missing; unlabelled topics fall back to 'topic_N'."""
+    if not LABELS_PATH.exists():
+        return {}
+    try:
+        return json.loads(LABELS_PATH.read_text())
+    except Exception:
+        return {}
+
+
+def topic_label(feature: str, labels: dict) -> str:
+    """Return 'name - topic N' if a name is set for this feature, else the feature as-is."""
+    if not feature.startswith("topic_"):
+        return feature
+    entry = labels.get(feature, {})
+    name = entry.get("name", "").strip() if isinstance(entry, dict) else str(entry).strip()
+    n = feature.split("_")[1]
+    return f"{name} - topic {n}" if name else feature
+
 
 def weighted_daily(df: pd.DataFrame) -> pd.DataFrame:
     """Aggregate chunk-level topic scores to daily level, weighted by n_messages."""
@@ -124,6 +146,8 @@ def run_cv(name: str, X: pd.DataFrame, y: pd.Series,
 def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     PLOT_DIR.mkdir(parents=True, exist_ok=True)
+
+    labels = load_topic_labels()
 
     # -- Load and aggregate sentiment data -----------------------------------
     raw = pd.read_csv(CSV_PATH)
@@ -200,6 +224,7 @@ def main() -> None:
 
     odds_df = pd.DataFrame({
         "feature":     ALL_FEATURES,
+        "label":       [topic_label(f, labels) for f in ALL_FEATURES],
         "coefficient": result.params[1:].values,
         "odds_ratio":  np.exp(result.params[1:].values),
         "p_value":     result.pvalues[1:].values,
@@ -228,11 +253,12 @@ def main() -> None:
     # -- Plots ---------------------------------------------------------------
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
+    ref_label = topic_label("topic_0", labels)
     colors = ["red" if c < 0 else "steelblue" for c in odds_df["coefficient"]]
-    axes[0].barh(odds_df["feature"], odds_df["coefficient"], color=colors)
+    axes[0].barh(odds_df["label"], odds_df["coefficient"], color=colors)
     axes[0].axvline(x=0, color="black", linewidth=0.8, linestyle="--")
     axes[0].set_xlabel("Coefficient (log-odds)")
-    axes[0].set_title(f"{TICKER} — Coefficients (ref: topic_0)")
+    axes[0].set_title(f"{TICKER} — Coefficients (ref: {ref_label})")
     axes[0].invert_yaxis()
 
     models = ["Market\nOnly", "Topics\nOnly", "Combined"]
