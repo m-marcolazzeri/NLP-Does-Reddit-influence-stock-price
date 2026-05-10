@@ -20,7 +20,7 @@ Group project part of the Natural Language Processing Course. It consists in the
 | 5. Summarize threads | Chunk threads into 100-message windows, sequentially summarize with Qwen2.5-14B-Instruct, build relevance input. | `src/summarization/` | merged dataset | `data/summarization/thread_summaries_all_chunks_v1.csv`, `data/relevance/pre_relevance_v1.csv` |
 | 6. Relevance labeling | BART zero-shot NLI classifier assigns `predicted_relevance ∈ {1, 0, -1}` to each comment. Evaluated against 3 000 hand-labeled rows. | `src/relevance/predict_relevance_zeroshot.py`, `src/relevance/evaluate_bart.py` | `data/relevance/pre_relevance_v1.csv` | `data/relevance/relevance_predictions_v1.csv` |
 | 7. Corpus building | Text cleaning (spaCy lemmatization, stopwords) + aggregation into per-stock-per-day chunks for LDA. | `src/corpus_building/` | `data/relevance/relevance_predictions_v1.csv` | `data/corpus_building/chunks_lda_v1.csv`, `chunks_sentiment_v1.csv` |
-| 8. LDA topic modeling | bigrams/trigrams → BoW corpus → coherence-based K search → final LDA training (K=7) + θ inference. | `src/topic_modeling/` (3 scripts + `config_lda.py`) | `data/corpus_building/chunks_lda_v1.csv`, `chunks_sentiment_v1.csv` | `data/topic_modeling/topic_words_v1.csv`, `results_v1.csv` |
+| 8. LDA topic modeling | bigrams/trigrams → BoW corpus → coherence-based K search → final LDA training (K=7) + θ inference. Generates topic label template for human annotation. | `src/topic_modeling/` (3 scripts + `config_lda.py` + `apply_topic_labels.py`) | `data/corpus_building/chunks_lda_v1.csv`, `chunks_sentiment_v1.csv` | `data/topic_modeling/topic_words_v1.csv`, `results_v1.csv`, `config/topic_labels_v1.json` |
 | 9. Financial analysis | Aggregate daily θ per stock (weighted by message volume), download intraday prices from Yahoo Finance, fit logistic regression models (market-only, topics-only, combined) with time-series cross-validation. | `src/financial/run_financial_analysis.py` | `data/topic_modeling/results_v1.csv` + Yahoo Finance | `data/financial/results_{TICKER}.json`, `data/financial/plots/results_{TICKER}.png` |
 
 ## Repository layout
@@ -79,11 +79,19 @@ python src/corpus_building/build_chunks.py
 # Stage 8: LDA (HPC recommended)
 sbatch hpc/run_corpus.sh      # 01_build_corpus.py
 sbatch hpc/run_search_k.sh    # 02_search_k.py  → inspect notebooks/06_lda_inspection.ipynb
-sbatch hpc/run_train_lda.sh   # 03_train_lda.py
+sbatch hpc/run_train_lda.sh   # 03_train_lda.py → fills config/topic_labels_v1.json template
+# → Fill in topic names in config/topic_labels_v1.json
+python src/topic_modeling/apply_topic_labels.py
 
 # Stage 9: financial analysis (requires internet for Yahoo Finance)
 python src/financial/run_financial_analysis.py
 ```
+
+## Data access
+
+> **Raw source data.** The pipeline starts from the [Academic Torrents Pushshift Reddit Archive (2005-06 → 2025-12)](https://academictorrents.com/details/3e3f64dee22dc304cdd2546254ca1f8e8ae542b4). Download the torrent and place `wallstreetbets_comments.zst` and `wallstreetbets_submissions.zst` under `data/raw/subreddits25/`.
+
+> **Intermediate data.** Running the full pipeline requires HPC access and several hours of compute. All intermediate outputs are available at: **[insert link here]**. Download and place the folder at the repo root as `data/`.
 
 ## Setup
 

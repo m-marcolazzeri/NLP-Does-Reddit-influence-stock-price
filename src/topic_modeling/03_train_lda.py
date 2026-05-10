@@ -294,7 +294,7 @@ def main() -> None:
         labels = {
             "_instructions": (
                 "For each topic, inspect the top words and fill in 'name' "
-                "(max 1 word, max 10 characters). "
+                "(max 1 word, max 15 characters). "
                 "Then run: python src/topic_modeling/apply_topic_labels.py"
             ),
         }

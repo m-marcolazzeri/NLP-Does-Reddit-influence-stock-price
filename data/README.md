@@ -1,5 +1,13 @@
 # data/
 
+> **Raw source data.** The pipeline starts from the [Academic Torrents Pushshift Reddit Archive (2005-06 → 2025-12)](https://academictorrents.com/details/3e3f64dee22dc304cdd2546254ca1f8e8ae542b4). Download the torrent and place the two files below under `data/raw/subreddits25/`:
+> - `wallstreetbets_comments.zst`
+> - `wallstreetbets_submissions.zst`
+>
+> These are the only external inputs required to run the full pipeline from scratch.
+
+> **Intermediate data.** Running the full pipeline end-to-end requires access to an HPC cluster and several hours of compute. If you want to run or inspect a specific stage independently, all intermediate `data/` outputs are available at the following link: **[insert link here]**. Download the folder and place it at the repo root as `data/`.
+
 All datasets produced or consumed by the pipeline. Subfolders mirror the stage structure in `src/`. The primary analytical unit throughout is the **comment**: one row = one comment, `id` (Reddit comment ID) is the primary key, `submission_id` is the foreign key to the parent thread. All timestamps are UTC (`created_utc` epoch integer, `date_utc` YYYY-MM-DD string). List-type columns (`matched_tickers`, `matched_terms`) use `|` as an internal separator.
 
 ## Data lineage

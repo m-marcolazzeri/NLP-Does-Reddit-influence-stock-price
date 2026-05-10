@@ -1,0 +1,108 @@
+{
+  "_instructions": "For each topic, inspect the top words and fill in 'name' (max 1 word, max 15 characters). Then run: python src/topic_modeling/apply_topic_labels.py",
+  "topic_0": {
+    "name": "Noise",
+    "top_words": [
+      "red",
+      "yesterday",
+      "break",
+      "tell",
+      "bear",
+      "profit",
+      "bull",
+      "see",
+      "port",
+      "goog"
+    ]
+  },
+  "topic_1": {
+    "name": "DownRisk",
+    "top_words": [
+      "profit",
+      "tariff",
+      "risk",
+      "tesla",
+      "position",
+      "contract",
+      "sure",
+      "try",
+      "value",
+      "see"
+    ]
+  },
+  "topic_2": {
+    "name": "TechSecVal",
+    "top_words": [
+      "tesla",
+      "tech",
+      "profit",
+      "great",
+      "post",
+      "tariff",
+      "position",
+      "worth",
+      "use",
+      "investor"
+    ]
+  },
+  "topic_3": {
+    "name": "AICompThreat",
+    "top_words": [
+      "deepseek",
+      "model",
+      "try",
+      "tech",
+      "growth",
+      "position",
+      "profit",
+      "use",
+      "cheap",
+      "hardware"
+    ]
+  },
+  "topic_4": {
+    "name": "AIInvest",
+    "top_words": [
+      "openai",
+      "deal",
+      "revenue",
+      "profit",
+      "investment",
+      "value",
+      "position",
+      "cash",
+      "business",
+      "growth"
+    ]
+  },
+  "topic_5": {
+    "name": "LongTerm",
+    "top_words": [
+      "product",
+      "revenue",
+      "position",
+      "see",
+      "valuation",
+      "growth",
+      "profit",
+      "market_cap",
+      "business",
+      "value"
+    ]
+  },
+  "topic_6": {
+    "name": "DataCenter",
+    "top_words": [
+      "build",
+      "cost",
+      "demand",
+      "value",
+      "use",
+      "meta",
+      "pay",
+      "margin",
+      "investment",
+      "take"
+    ]
+  }
+}
