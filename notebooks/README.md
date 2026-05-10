@@ -12,4 +12,3 @@ Inspection and analysis notebooks, numbered in pipeline order. All notebooks ass
 | `04_bart_evaluation.ipynb` | Stage 6 | Interactive review of BART relevance predictions vs hand labels; confusion matrix, error analysis |
 | `05_vocabulary_inspection.ipynb` | Stage 7–8 | Examine cleaned token distributions, bigram/trigram candidates, domain stopword decisions |
 | `06_lda_inspection.ipynb` | Stage 8 | Coherence scores by K, topic–word distributions, θ distribution diagnostics |
-| `07_topic_labeling.ipynb` | Stage 8 | Assign human-readable labels to the 7 LDA topics; export to `topic_words_v1.csv` |
