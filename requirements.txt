@@ -10,3 +10,9 @@ jupyter>=1.0
 gensim>=4.3
 spacy>=3.7
 emoji>=2.0
+
+# Financial analysis
+yfinance>=0.2
+statsmodels>=0.14
+scikit-learn>=1.4
+matplotlib>=3.8

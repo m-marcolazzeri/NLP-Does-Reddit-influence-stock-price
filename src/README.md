@@ -11,7 +11,7 @@ Source code for the Reddit Tech Stocks NLP pipeline. Each subfolder is one pipel
 | `relevance/` | 6 | Zero-shot NLI relevance classifier (BART-large-MNLI) + evaluation against hand labels |
 | `corpus_building/` | 7 | Text cleaning (spaCy lemmatization, stopwords) + per-stock-per-day chunking for LDA |
 | `topic_modeling/` | 8 | Bigrams/trigrams → BoW corpus → coherence K search → LDA training + θ inference |
-| `modeling/` | 9 | Financial panel + predictive models (not yet implemented) |
+| `financial/` | 9 | Daily θ aggregation, Yahoo Finance price download, logistic regression model comparison |
 
 Scripts are run from the project root (`python src/<stage>/<script>.py`). Paths in each script are resolved relative to the project root via `Path(__file__).resolve().parents[2]`.
 
@@ -74,3 +74,9 @@ Scripts are run from the project root (`python src/<stage>/<script>.py`). Paths 
 > 5. Only then run `03_train_lda.py`.
 >
 > `02_search_k.py` prints an explicit alert at termination as a reminder.
+
+## financial/
+
+| Script | Role |
+|---|---|
+| `run_financial_analysis.py` | Loads `results_v1.csv`, aggregates daily θ distributions weighted by `n_messages`, downloads intraday OHLC data from Yahoo Finance, fits three logistic regression models (market-only, topics-only, combined) with `TimeSeriesSplit` CV, runs a full `statsmodels` logit for p-values and odds ratios, saves results as JSON and a two-panel PNG. K is read automatically from `config_lda.py`. To analyse a different stock, change `TICKER` and `STOCK_NAME` at the top of the configuration block. |

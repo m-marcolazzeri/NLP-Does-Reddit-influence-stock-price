@@ -1,6 +1,6 @@
 # Reddit Tech Stocks NLP
 
-Academic NLP project. We extract Reddit discussions about a fixed universe of US tech stocks from the r/wallstreetbets archive, build a comment-level dataset enriched with submission context, summarize each thread with an LLM, and (in later stages) use those summaries to label individual comments by financial relevance for downstream sentiment, topic modeling, aggregation, and short-term market-activity prediction.
+Group project part of the Natural Language Processing Course. It consists in the extraction of Reddit discussions about a fixed universe of US tech stocks from the r/wallstreetbets archive, build a comment-level dataset enriched with submission context, summarize each thread with an LLM, and use those summaries to label individual comments by financial relevance for downstream sentiment, topic modeling, aggregation, and short-term market-activity prediction.
 
 ## Scope
 
@@ -21,9 +21,7 @@ Academic NLP project. We extract Reddit discussions about a fixed universe of US
 | 6. Relevance labeling | BART zero-shot NLI classifier assigns `predicted_relevance ∈ {1, 0, -1}` to each comment. Evaluated against 3 000 hand-labeled rows. | `src/relevance/predict_relevance_zeroshot.py`, `src/relevance/evaluate_bart.py` | `data/relevance/pre_relevance_v1.csv` | `data/relevance/relevance_predictions_v1.csv` |
 | 7. Corpus building | Text cleaning (spaCy lemmatization, stopwords) + aggregation into per-stock-per-day chunks for LDA. | `src/corpus_building/` | `data/relevance/relevance_predictions_v1.csv` | `data/corpus_building/chunks_lda_v1.csv`, `chunks_sentiment_v1.csv` |
 | 8. LDA topic modeling | bigrams/trigrams → BoW corpus → coherence-based K search → final LDA training (K=7) + θ inference. | `src/topic_modeling/` (3 scripts + `config_lda.py`) | `data/corpus_building/chunks_lda_v1.csv`, `chunks_sentiment_v1.csv` | `data/topic_modeling/topic_words_v1.csv`, `results_v1.csv` |
-| 9. Financial panel + modeling | (planned) Aggregate daily θ per stock, merge with market returns, run predictive models. | `src/modeling/` | `data/topic_modeling/results_v1.csv` + price data |  |
-
-The **main analytical artifact** is the comment-level merged dataset (stage 4). Submissions are not separate rows; they are attached as the `submission_text` context column.
+| 9. Financial analysis | Aggregate daily θ per stock (weighted by message volume), download intraday prices from Yahoo Finance, fit logistic regression models (market-only, topics-only, combined) with time-series cross-validation. | `src/financial/run_financial_analysis.py` | `data/topic_modeling/results_v1.csv` + Yahoo Finance | `data/financial/results_{TICKER}.json`, `data/financial/plots/results_{TICKER}.png` |
 
 ## Repository layout
 
@@ -36,7 +34,7 @@ data/
   relevance/             pre_relevance input, BART predictions, hand-labeled evaluation sets
   corpus_building/       Cleaned text and per-stock-per-day chunks for LDA
   topic_modeling/        BoW corpus, LDA models, coherence scores, topic words, θ results
-  modeling/              (planned) Financial panel and model outputs
+  financial/             Daily θ aggregation, model outputs (JSON), plots
 docs/
   extraction/            Extraction roadmap
   relevance/             Annotation guidelines, zero-shot NLI architecture
@@ -50,7 +48,7 @@ src/
   relevance/             Stage 6: BART classifier, evaluation
   corpus_building/       Stage 7: text cleaning + chunking
   topic_modeling/        Stage 8: LDA pipeline (config_lda.py + 3 scripts)
-  modeling/              Stage 9: financial panel (planned)
+  financial/             Stage 9: financial analysis (daily θ aggregation + logistic regression)
 ```
 
 ## Running end-to-end
@@ -82,6 +80,9 @@ python src/corpus_building/build_chunks.py
 sbatch hpc/run_corpus.sh      # 01_build_corpus.py
 sbatch hpc/run_search_k.sh    # 02_search_k.py  → inspect notebooks/06_lda_inspection.ipynb
 sbatch hpc/run_train_lda.sh   # 03_train_lda.py
+
+# Stage 9: financial analysis (requires internet for Yahoo Finance)
+python src/financial/run_financial_analysis.py
 ```
 
 ## Setup
