@@ -6,7 +6,7 @@
 >
 > These are the only external inputs required to run the full pipeline from scratch.
 
-> **Intermediate data.** Running the full pipeline end-to-end requires access to an HPC cluster and several hours of compute. If you want to run or inspect a specific stage independently, all intermediate `data/` outputs are available at the following link: **[insert link here]**. Download the folder and place it at the repo root as `data/`.
+> **Intermediate data.** Running the full pipeline end-to-end requires access to an HPC cluster and several hours of compute. If you want to run or inspect a specific stage independently, all intermediate `data/` outputs are available at the following link: **https://drive.google.com/drive/folders/1F1kvhj-Xl8hL-5QdsWaDL-q_X-kYQZ-_?usp=drive_link**. Download the folder and place it at the repo root as `data/`.
 
 All datasets produced or consumed by the pipeline. Subfolders mirror the stage structure in `src/`. The primary analytical unit throughout is the **comment**: one row = one comment, `id` (Reddit comment ID) is the primary key, `submission_id` is the foreign key to the parent thread. All timestamps are UTC (`created_utc` epoch integer, `date_utc` YYYY-MM-DD string). List-type columns (`matched_tickers`, `matched_terms`) use `|` as an internal separator.
 

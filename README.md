@@ -91,7 +91,7 @@ python src/financial/run_financial_analysis.py
 
 > **Raw source data.** The pipeline starts from the [Academic Torrents Pushshift Reddit Archive (2005-06 → 2025-12)](https://academictorrents.com/details/3e3f64dee22dc304cdd2546254ca1f8e8ae542b4). Download the torrent and place `wallstreetbets_comments.zst` and `wallstreetbets_submissions.zst` under `data/raw/subreddits25/`.
 
-> **Intermediate data.** Running the full pipeline requires HPC access and several hours of compute. All intermediate outputs are available at: **[insert link here]**. Download and place the folder at the repo root as `data/`.
+> **Intermediate data.** Running the full pipeline requires HPC access and several hours of compute. All intermediate outputs are available at: **https://drive.google.com/drive/folders/1F1kvhj-Xl8hL-5QdsWaDL-q_X-kYQZ-_?usp=drive_link**. Download and place the folder at the repo root as `data/`.
 
 ## Setup
 
