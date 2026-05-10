@@ -169,7 +169,6 @@ def infer_theta(
 ) -> pd.DataFrame:
     """
     Apply identical preprocessing pipeline to sentiment chunks, then infer θ.
-    Uses raw BoW (no TF-IDF) — consistent with training.
     """
     texts = sentiment_df["chunk_text"].astype(str).tolist()
     print(f"[INFO] Preprocessing {len(texts):,} sentiment chunks...")
@@ -281,44 +280,3 @@ def main() -> None:
     # Generate config/topic_labels_v1.json only if it does not exist yet, or
     # if K has changed (existing file has a different number of keys).
     labels_path = BASE_DIR / "config" / "topic_labels_v1.json"
-    existing_ok = False
-    if labels_path.exists():
-        try:
-            existing = json.loads(labels_path.read_text())
-            topic_keys = [key for key in existing if key.startswith("topic_")]
-            existing_ok = len(topic_keys) == k
-        except Exception:
-            pass
-
-    if not existing_ok:
-        labels = {
-            "_instructions": (
-                "For each topic, inspect the top words and fill in 'name' "
-                "(max 1 word, max 15 characters). "
-                "Then run: python src/topic_modeling/apply_topic_labels.py"
-            ),
-        }
-        for i in range(k):
-            top_words = (
-                topic_words_df[topic_words_df["topic_id"] == i]
-                .head(10)["word"]
-                .tolist()
-            )
-            labels[f"topic_{i}"] = {
-                "name": "",
-                "top_words": top_words,
-            }
-        labels_path.write_text(json.dumps(labels, indent=2))
-        print(f"[INFO] Topic labels template saved → {labels_path.relative_to(BASE_DIR)}")
-        print("[INFO] → Fill in 'name' for each topic, then run apply_topic_labels.py")
-    else:
-        print(f"[INFO] Topic labels file already exists with K={k} entries — not overwritten.")
-
-    print("\n[INFO] Step 3 complete.")
-    print("[INFO] → Open notebooks/06_lda_inspection.ipynb to check topics")
-    print("[INFO] → If topics need refinement: adjust config_lda.py → sbatch run_train_lda.sh")
-    print("[INFO] → Fill in config/topic_labels_v1.json, then run apply_topic_labels.py")
-
-
-if __name__ == "__main__":
-    main()

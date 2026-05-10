@@ -60,7 +60,7 @@ Scripts are run from the project root (`python src/<stage>/<script>.py`). Paths 
 | Script | Role |
 |---|---|
 | `config_lda.py` | All LDA hyperparameters and I/O paths — single source of truth imported by the three pipeline scripts |
-| `01_build_corpus.py` | Trains Gensim Phrases (bigrams/trigrams), builds Dictionary and BoW corpus. Also builds a TF-IDF corpus saved as `corpus_tfidf_reference.mm` for ablation comparison only — it is **not** fed to LDA. |
+| `01_build_corpus.py` | Trains Gensim Phrases (bigrams/trigrams), builds Dictionary and BoW corpus. |
 | `02_search_k.py` | Sweeps K; computes u_mass, c_v, c_npmi coherence and PUW topic diversity. **Ends with a mandatory human-in-the-loop step** — see below. |
 | `03_train_lda.py` | Trains final LDA (`LdaMulticore`); infers per-document θ distributions; generates `config/topic_labels_v1.json` placeholder if not present |
 | `apply_topic_labels.py` | Reads `config/topic_labels_v1.json` and adds a `topic_name` column to `topic_words_v1.csv`. Run once after filling in topic names. |
@@ -72,22 +72,4 @@ Scripts are run from the project root (`python src/<stage>/<script>.py`). Paths 
 > After `02_search_k.py` finishes, the pipeline cannot continue automatically. A researcher must:
 > 1. Inspect `coherence_scores.csv` and `coherence_plot.png`.
 > 2. Open `notebooks/06_lda_inspection.ipynb` and inspect coherence + diversity metrics and topic word quality across candidate K values.
-> 3. Choose K based on a combination of quantitative metrics and qualitative interpretability.
-> 4. Set `K_FINAL = <chosen_K>` in `config_lda.py`.
-> 5. Only then run `03_train_lda.py`.
->
-> `02_search_k.py` prints an explicit alert at termination as a reminder.
->
-> **After `03_train_lda.py`**
->
-> `03_train_lda.py` generates `config/topic_labels_v1.json` with K empty placeholders. A researcher must:
-> 1. Inspect `topic_words_v1.csv` or `notebooks/06_lda_inspection.ipynb` to identify each topic.
-> 2. Fill in a short name (max 1 word, 15 characters) for each topic in `config/topic_labels_v1.json`.
-> 3. Run `apply_topic_labels.py` to add the `topic_name` column to `topic_words_v1.csv`.
-> 4. Labels are then automatically picked up by `run_financial_analysis.py` for plots and JSON output.
-
-## financial/
-
-| Script | Role |
-|---|---|
-| `run_financial_analysis.py` | Loads `results_v1.csv`, aggregates daily θ distributions weighted by `n_messages`, downloads intraday OHLC data from Yahoo Finance, fits three logistic regression models (market-only, topics-only, combined) with `TimeSeriesSplit` CV, runs a full `statsmodels` logit for p-values and odds ratios, saves results as JSON and a two-panel PNG. K is read automatically from `config_lda.py`. To analyse a different stock, change `TICKER` and `STOCK_NAME` at the top of the configuration block. |
+> 3. Choose K based on a combination of quantitative metrics and qualitative interpret

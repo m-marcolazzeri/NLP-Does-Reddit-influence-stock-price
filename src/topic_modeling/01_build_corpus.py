@@ -13,9 +13,6 @@ Outputs  (data/topic_modeling/):
     dictionary.gensim       Gensim Dictionary (vocabulary)
     corpus_bow.mm           raw BoW corpus  ← used by LDA
     corpus_bow.mm.index
-    corpus_tfidf_reference.mm       TF-IDF corpus — reference/ablation only, NOT used by LDA
-    corpus_tfidf_reference.mm.index
-    tfidf_reference_model.gensim    TF-IDF model — kept for comparison in the report
     bigram_model.pkl        frozen Phrases bigram detector
     trigram_model.pkl       frozen Phrases trigram detector
 
@@ -160,21 +157,16 @@ def build_bigrams_and_trigrams(token_lists: list[list[str]]) -> tuple:
 
 
 # ---------------------------------------------------------------------------
-# Dictionary + BoW + TF-IDF
+# Dictionary + BoW
 # ---------------------------------------------------------------------------
 
 def build_dictionary_and_corpus(token_lists: list[list[str]]):
     """
-    Build Dictionary, raw BoW corpus (→ LDA input), and TF-IDF corpus.
-
-    TF-IDF is saved as corpus_tfidf_reference.mm for methodological comparison
-    only — it is NOT passed to LDA. LDA requires raw integer counts (BoW);
-    feeding it TF-IDF weights (continuous, normalised) distorts the
-    Dirichlet-multinomial posterior causing theta domination (one topic
-    absorbs >0.9 of the mass for most documents).
+    Build Gensim Dictionary and raw BoW corpus (LDA input).
+    LDA requires raw integer counts; documents are represented as
+    bag-of-words vectors after frequency-based vocabulary filtering.
     """
     from gensim.corpora import Dictionary
-    from gensim.models import TfidfModel
 
     print("[INFO] Building dictionary...")
     dictionary = Dictionary(token_lists)
@@ -189,11 +181,7 @@ def build_dictionary_and_corpus(token_lists: list[list[str]]):
     if n_empty:
         print(f"[WARN] {n_empty} empty documents after filtering.")
 
-    print("[INFO] Building TF-IDF model (for reference)...")
-    tfidf_model  = TfidfModel(corpus_bow)
-    corpus_tfidf = list(tfidf_model[corpus_bow])
-
-    return dictionary, corpus_bow, corpus_tfidf, tfidf_model
+    return dictionary, corpus_bow
 
 
 # ---------------------------------------------------------------------------
@@ -229,23 +217,19 @@ def main() -> None:
         pickle.dump(trigram_phraser, f)
     print("[INFO] trigram_model.pkl saved.")
 
-    print("\n[INFO] Building dictionary + corpora...")
-    dictionary, corpus_bow, corpus_tfidf, tfidf_model = build_dictionary_and_corpus(token_lists_tg)
+    print("\n[INFO] Building dictionary + BoW corpus...")
+    dictionary, corpus_bow = build_dictionary_and_corpus(token_lists_tg)
 
     dictionary.save(str(OUTPUT_DIR / "dictionary.gensim"))
     print("[INFO] dictionary.gensim saved.")
 
     from gensim.corpora import MmCorpus
     MmCorpus.serialize(str(OUTPUT_DIR / "corpus_bow.mm"), corpus_bow)
-    # TF-IDF saved for reference / ablation study in the report.
-    # filename suffix "_reference" signals it is NOT the LDA training corpus.
-    MmCorpus.serialize(str(OUTPUT_DIR / "corpus_tfidf_reference.mm"), corpus_tfidf)
-    tfidf_model.save(str(OUTPUT_DIR / "tfidf_reference_model.gensim"))
     print("[INFO] corpus_bow.mm saved (LDA input).")
-    print("[INFO] corpus_tfidf_reference.mm + tfidf_reference_model.gensim saved (reference only).")
 
     print("\n[INFO] Step 1 complete. Next: sbatch run_search_k.sh")
 
 
 if __name__ == "__main__":
     main()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
